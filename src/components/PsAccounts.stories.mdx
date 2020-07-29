@@ -38,8 +38,6 @@ Once integrated, the component can show different cases:
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: true,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
@@ -94,8 +92,6 @@ If the shop is in a multi-store context, the user will have a selector like this
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: true,
           currentShop: null,
           shops: [
             {
@@ -139,8 +135,8 @@ If the shop is in a multi-store context, the user will have a selector like this
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: true,
+          psAccountsInstallLink: null,
+          psAccountsEnableLink: null,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
@@ -200,8 +196,8 @@ his address from the link received in his mailbox.
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: true,
+          psAccountsInstallLink: null,
+          psAccountsEnableLink: null,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
@@ -266,8 +262,8 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: false,
-          psAccountsIsEnabled: true,
+          psAccountsInstallLink: http://localhost:8082/admin-dev/index.php?controller=AdminModules,
+          psAccountsEnableLink: http://localhost:8082/admin-dev/index.php?controller=AdminModules,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
@@ -321,8 +317,8 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: false,
+          psAccountsInstallLink: http://localhost:8082/admin-dev/index.php?controller=AdminModules,
+          psAccountsEnableLink: http://localhost:8082/admin-dev/index.php?controller=AdminModules,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
@@ -376,8 +372,8 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
-          psAccountsIsInstalled: true,
-          psAccountsIsEnabled: true,
+          psAccountsInstallLink: null,
+          psAccountsEnableLink: null,
           currentShop: {
             id: 1,
             name: 'PrestaShop',
