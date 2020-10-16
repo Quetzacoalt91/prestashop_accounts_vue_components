@@ -1,0 +1,110 @@
+import { Meta, Story, Preview, Props, Description } from '@storybook/addon-docs/blocks';
+import { withKnobs, boolean, object, text } from '@storybook/addon-knobs';
+import { action } from '@storybook/addon-actions';
+
+import PlanDetails from './PlanDetails';
+
+<Meta title="Sub-Components|Card/PlanDetails" component={PlanDetails} decorators={[withKnobs]} />
+
+# PlanDetails card behavior
+
+The `PlanDetails` component is here to show the **actual module plan** (free or paying) the shop subscribed,
+and to **allow the user to upgrade to an upper plan** (paying).
+
+TODO: write full description
+TODO: add more case
+
+
+---
+## The shop subscribed to a free plan (the Base one)
+
+<Story name='Upgrade Free plan to Next plan' height='120px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234567',
+            level: 42,
+            name: 'My Base plan',
+            price: null,
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plans: [
+            {
+              id: '1234567',
+              level: 42,
+              name: 'My Base plan',
+              price: null,
+              periodicity: 'monthly',
+              recommended: false
+            },
+            {
+              id: '1234568',
+              level: 45,
+              name: 'My Upper plan',
+              price: { taxIncluded: 1699, currency: '€' },
+              periodicity: 'monthly',
+              recommended: true
+            }
+          ],
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      isHighestPlan: true,
+    },
+    template: `
+      <b-card-group class="card-deck">
+        <template v-for="plan in billing.plans">
+          <PlanDetails
+            :key="plan.id"
+            :plan="plan"
+            :highestPlan="isHighestPlan(plan)"
+            :currentPlan="billing.currentPlan"
+            v-on:next="next"
+            v-on:downgrade="downgrade"
+          />
+        </template>
+      </b-card-group>
+    `,
+  }}
+</Story>
+
+
+---
+# Integration
+
+_Notice: If you need to integrate the standard behavior of PS Accounts, please see the
+[`PsAccounts` component in the integration section](?path=/docs/integration-psaccounts-panel--connected)._
+
+If you need a customa integration of PS Accounts sub-components, here is the PlanDetails, card:
+
+```html
+  <b-card-group class="card-deck">
+    <template v-for="plan in billing.plans">
+      <PlanDetails
+        :key="plan.id"
+        :plan="plan"
+        :highestPlan="isHighestPlan(plan)"
+        :currentPlan="billing.currentPlan"
+        v-on:next="next"
+        v-on:downgrade="downgrade"
+      />
+    </template>
+  </b-card-group>
+```
+
+# Technical details
+
+<Description of={PlanDetails} />
+<Props of={PlanDetails} />

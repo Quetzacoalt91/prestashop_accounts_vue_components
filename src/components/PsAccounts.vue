@@ -79,6 +79,7 @@
       :billing="validatedContext.billing"
       @back="backFromPlans()"
       @next="(plan) => goToTunnel(plan)"
+      @downgrade="(plan) => goToDowngrade(plan)"
     />
   </div>
 </template>
@@ -251,6 +252,14 @@
         // TODO: modal display, with a new PlanTunnel component inside, for given plan
         setTimeout(() => alert(`Not yet implemented: ${plan}`), 400);
       },
+      goToDowngrade(plan) {
+        this.showPlans = false;
+        this.eventCallback('plan_downgrade_selected', plan);
+
+        // TODO: modal display, confirmation component inside, for given plan
+        // TODO: downgrade next period
+        setTimeout(() => alert(`Not yet implemented: ${plan}`), 400);
+      },
       viewingPanel() {
         const previousPanel = this.panelShown;
 
@@ -278,6 +287,7 @@
           case 'sign_in':
           case 'sign_out':
           case 'plan_selected':
+          case 'plan_downgrade_selected':
             /**
              * Emitted when user action occurred on a panel.
              * @type {Event}
