@@ -9,24 +9,40 @@
 
     <b-card-body card-body class="align-self-center">
 
+      <b-form-group class="d-flex justify-content-end" v-if="multiPlans > 2">
+        <!-- TODO: Use i18n string -->
+        <!-- TODO: Bind event on click -->
+        <b-form-radio-group
+          id="price-periodicity"
+          v-model="selected"
+          :options="options"
+          name="price-periodicity">
+        </b-form-radio-group>
+      </b-form-group>
+
+      <!-- Card Header -->
       <b-card-group class="card-deck">
         <template v-for="plan in billing.plans">
-          <b-card no-body :key="plan.id" class="text-center" v-bind:class="{ 'header-recommended': plan.recommended, 'header-rectangle': !plan.recommended }">
+          <b-card no-body :key="plan.id" class="text-center" v-bind:class="classHeaderRecommended(plan)">
             <!-- TODO: Use i18n string {billing.billing.recommendedPlan} -->
             <span v-if="plan.recommended">Recommended</span>
           </b-card>
         </template>
       </b-card-group>
 
+      <!-- Card Plan -->
       <b-card-group class="card-deck">
         <template v-for="plan in billing.plans">
           <PlanDetails
             :key="plan.id"
             :plan="plan"
-            :highestPlan="isHighestPlan(plan)"
+            :multiPlans="multiPlans"
+            :moduleIsUpdated="moduleIsUpdated"
             :currentPlan="billing.currentPlan"
+            :highestPlan="isHighestPlan(plan)"
             @next="next"
             @downgrade="downgrade"
+            @updated="updateEvent()"
           />
         </template>
       </b-card-group>
@@ -57,6 +73,9 @@
     BCard,
     BCardBody,
     BCardGroup,
+    BFormGroup,
+    BFormRadio,
+    BFormRadioGroup,
   } from 'bootstrap-vue';
 
   /**
@@ -72,6 +91,9 @@
       BCard,
       BCardBody,
       BCardGroup,
+      BFormGroup,
+      BFormRadio,
+      BFormRadioGroup,
       PlanDetails,
     },
     props: {
@@ -83,6 +105,19 @@
         type: Object,
         required: true,
       },
+      moduleIsUpdated: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    data() {
+      return {
+        selected: 'monthly',
+        options: [
+          { text: 'Monthly', value: 'monthly' },
+          { text: 'Annual', value: 'yearly' },
+        ]
+      }
     },
     methods: {
       back() {
@@ -106,15 +141,38 @@
          */
         this.$emit('downgrade', plan);
       },
+      updateEvent() {
+        /**
+         * Emitted when enable button is clicked.
+         * @type {Event}
+         */
+        this.$emit('updated', true);
+      },
+      // Others
       isHighestPlan(cp) {
         return !(this.billing.plans.find(
           (p) => (p.level > cp.level && p.price && p.price.taxIncluded > 0),
         ));
       },
+      classHeaderRecommended: function (plan) {
+        const p = plan;
+        const cp = this.billing.currentPlan;
+        return {
+          'header-rectangle': !p.recommended,
+          'header-current': p.recommended && cp.id === p.id,
+          'header-recommended': p.recommended && cp.id !== p.id,
+        }
+      },
     },
     mounted() {
     },
     computed: {
+      multiPlans() {
+        return this.billing.plans.length;
+      },
+      defaultPeriodicity() {
+        return 'monthly';
+      },
       currentPlanIsFree() {
         const cp = this.billing.currentPlan;
         if (!cp || !cp.price || !cp.price.taxIncluded || cp.price.taxIncluded === 0) {
@@ -122,12 +180,6 @@
         }
         return false;
       },
-      // classHeaderRecommended: function () {
-      //   return {
-      //     'header-recommended': plan.recommended,
-      //     'header-rectangle': !plan.recommended
-      //   }
-      // },
     },
     watch: {
     },
@@ -150,6 +202,12 @@
 
 .header-recommended {
   background-color: #25B9D7!important;
+  color: #FFFFFF;
+  border: none;
+}
+
+.header-current {
+  background-color: #6C868E!important;
   color: #FFFFFF;
   border: none;
 }

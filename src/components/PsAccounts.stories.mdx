@@ -39,6 +39,7 @@ Once integrated, the component can show different cases:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -100,6 +101,7 @@ If the shop is in a multi-store context, the user will have a selector like this
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: null,
@@ -150,6 +152,7 @@ If the shop is in a multi-store context, the user will have a selector like this
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -216,6 +219,7 @@ his address from the link received in his mailbox.
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -287,6 +291,7 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: 'http://localhost:8082/admin-dev/index.php/improve/modules/manage/action/install/ps_accounts?_token=dCspOkG6tWwGoJIKdugKufBFtdNF--UPq8NVmyiUKLM',
           psAccountsEnableLink: null,
           currentShop: {
@@ -347,6 +352,7 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: 'http://localhost:8082/admin-dev/index.php/improve/modules/manage/action/enable/ps_accounts?_token=dCspOkG6tWwGoJIKdugKufBFtdNF--UPq8NVmyiUKLM',
           currentShop: {
@@ -407,6 +413,7 @@ You can have these different cases when the shop prerequisites are not fully val
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -474,6 +481,7 @@ component and the standard behavior won't let the user do anything:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: 'true', // will pass: can be casted to uri by Joi
           psAccountsEnableLink: 'ptet-ben-k-non', // will pass: can be casted to uri by Joi
           currentShop: 42,
@@ -566,6 +574,7 @@ Case with a free plan, with possibility to upgrade to paying plans:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -656,6 +665,7 @@ Case with paying plan, with possibility to upgrade to more expensive plans:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -747,6 +757,7 @@ Case with paying plan, without possibility to upgrade to more expensive plan:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {
@@ -829,6 +840,196 @@ Case with paying plan, without possibility to upgrade to more expensive plan:
 </Story>
 
 
+Case with two paying plan, with possibility to upgrade to more expensive plans:
+
+<Story name='Connected with a two paying plan' height='470px'>
+  {{
+    components: { PsAccounts },
+    props: {
+      context: {
+        default: object('context', {
+          psIs17: true,
+          psModuleUpgradeLink: null,
+          psAccountsInstallLink: null,
+          psAccountsEnableLink: null,
+          currentShop: {
+            id: 1,
+            name: 'PrestaShop',
+            url: 'http://localhost:8082/admin-dev/index.php?controller=AdminModules&setShopContext=s-1&token=7e6ed965a445faaa639275d16418264d',
+            domain: 'my-domain.com',
+            domainSsl: 'my-secure-domain.com',
+          },
+          shops: [
+            {
+              id: 1,
+              name: 'Default',
+              shops: [
+                {
+                  id: 1,
+                  name: 'PrestaShop',
+                  url: 'http://localhost:8082/admin-dev/index.php?controller=AdminModules&setShopContext=s-1&token=7e6ed965a445faaa639275d16418264d',
+                  domain: 'my-domain.com',
+                  domainSsl: 'my-secure-domain.com',
+                },
+              ],
+            },
+          ],
+          user: {
+            email: 'merchant@my-shop.com',
+            emailIsValidated: true,
+            isSuperAdmin: true,
+          },
+          onboardingLink: 'http://pouet.com',
+          superAdminEmail: 'big.boss@my-shop.com',
+          ssoResendVerificationEmail: 'http://pouet.com',
+          manageAccountLink: 'http://poeut.com',
+          billing: {
+            currentPlan: {
+              id: '1234567',
+              level: 42,
+              name: 'Start',
+              price: null,
+              periodicity: 'monthly',
+              recommended: false,
+            },
+            plans: [
+              {
+                id: '1234567',
+                level: 42,
+                name: 'Start',
+                price: null,
+                periodicity: 'monthly',
+                recommended: false,
+              },
+              {
+                id: '1234568',
+                level: 45,
+                name: 'Sell',
+                price: { taxIncluded: 500, currency: '€' },
+                periodicity: 'monthly',
+                recommended: true
+              },
+              {
+                id: '1234569',
+                level: 47,
+                name: 'Upper plan',
+                price: { taxIncluded: 2000, currency: '€' },
+                periodicity: 'monthly',
+                recommended: false
+              }
+            ],
+            address: '12 Rue d\'Amsterdam, 75019 Paris',
+            paymentMethod: {
+              cardType: 'mastercard',
+              lastFourNumbers: '4567',
+              expiry: '12/2026',
+            },
+          }
+        })
+      },
+    },
+    methods: {
+      actionEvent: action('actioned'),
+      viewEvent: action('viewed'),
+    },
+    template: '<PsAccounts :context="context" class="m-4" @actioned="actionEvent" @viewed="viewEvent">' +
+      '<template v-slot:body>- Module configuration slot -</template>' +
+    '</PsAccounts>',
+  }}
+</Story>
+
+Case with module nede to be upgrade:
+
+<Story name='Connected but need module upgrade' height='470px'>
+  {{
+    components: { PsAccounts },
+    props: {
+      context: {
+        default: object('context', {
+          psIs17: true,
+          psModuleUpgradeLink: 'http://localhost:8082/admin-dev/index.php/improve/modules/manage/action/update/ps_accounts?_token=dCspOkG6tWwGoJIKdugKufBFtdNF--UPq8NVmyiUKLM',
+          psAccountsInstallLink: null,
+          psAccountsEnableLink: null,
+          currentShop: {
+            id: 1,
+            name: 'PrestaShop',
+            url: 'http://localhost:8082/admin-dev/index.php?controller=AdminModules&setShopContext=s-1&token=7e6ed965a445faaa639275d16418264d',
+            domain: 'my-domain.com',
+            domainSsl: 'my-secure-domain.com',
+          },
+          shops: [
+            {
+              id: 1,
+              name: 'Default',
+              shops: [
+                {
+                  id: 1,
+                  name: 'PrestaShop',
+                  url: 'http://localhost:8082/admin-dev/index.php?controller=AdminModules&setShopContext=s-1&token=7e6ed965a445faaa639275d16418264d',
+                  domain: 'my-domain.com',
+                  domainSsl: 'my-secure-domain.com',
+                },
+              ],
+            },
+          ],
+          user: {
+            email: 'merchant@my-shop.com',
+            emailIsValidated: true,
+            isSuperAdmin: true,
+          },
+          onboardingLink: 'http://perdu.com',
+          superAdminEmail: 'big.boss@my-shop.com',
+          ssoResendVerificationEmail: 'http://perdu.com',
+          manageAccountLink: 'http://perdu.com',
+          billing: {
+            currentPlan: {
+              id: '1234567',
+              level: 42,
+              name: 'Start',
+              price: null,
+              periodicity: 'monthly',
+              recommended: false,
+            },
+            plans: [
+              {
+                id: '1234567',
+                level: 42,
+                name: 'Start',
+                price: null,
+                periodicity: 'monthly',
+                recommended: false,
+              },
+              {
+                id: '1234568',
+                level: 45,
+                name: 'Sell',
+                price: { taxIncluded: 500, currency: '€' },
+                periodicity: 'monthly',
+                recommended: true
+              }
+            ],
+            address: '12 Rue d\'Amsterdam, 75019 Paris',
+            paymentMethod: {
+              cardType: 'mastercard',
+              lastFourNumbers: '4567',
+              expiry: '12/2026',
+            },
+          }
+        })
+      },
+    },
+    methods: {
+      actionEvent: action('actioned'),
+      viewEvent: action('viewed'),
+    },
+    template: '<PsAccounts :context="context" class="m-4" @actioned="actionEvent" @viewed="viewEvent">' +
+      '<template v-slot:body>- Module configuration slot -</template>' +
+    '</PsAccounts>',
+  }}
+</Story>
+
+
+
 Display when texts are too long:
 
 <Story name='Connected with long names plans' height='520px'>
@@ -838,6 +1039,7 @@ Display when texts are too long:
       context: {
         default: object('context', {
           psIs17: true,
+          psModuleUpgradeLink: null,
           psAccountsInstallLink: null,
           psAccountsEnableLink: null,
           currentShop: {

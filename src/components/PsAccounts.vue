@@ -77,9 +77,11 @@
     <Plans
       v-else
       :billing="validatedContext.billing"
+      :module-is-updated="psModuleIsUpdated"
       @back="backFromPlans()"
       @next="(plan) => goToTunnel(plan)"
       @downgrade="(plan) => goToDowngrade(plan)"
+      @updated="updatePsModule()"
     />
   </div>
 </template>
@@ -149,6 +151,9 @@
       },
       psAccountsIsEnabled() {
         return this.validatedContext.psAccountsEnableLink === null;
+      },
+      psModuleIsUpdated() {
+        return this.validatedContext.psModuleUpgradeLink === null;
       },
       showBilling() {
         const b = this.validatedContext.billing;
@@ -237,6 +242,33 @@
           this.hasError = true;
         });
       },
+      updatePsModule() {
+        this.eventCallback('update_ps_module');
+
+        // clean errors before retry
+        this.hasError = false;
+        this.enableLoading = true;
+
+        // if on ps before 1.7.3 just reload the page
+        if (!this.validatedContext.psIs17) {
+          window.location.href = this.validatedContext.psModuleUpgradeLink;
+        }
+
+        fetch(this.validatedContext.psModuleUpgradeLink, {
+          method: 'POST',
+        }).then((response) => response.json(),
+        ).then((data) => {
+          if (data.ps_accounts.status === false) {
+            throw new Error('Cannot update MODULE_NAME module.');
+          }
+
+          this.validatedContext.psModuleUpgradeLink = null;
+          this.enableLoading = false;
+        }).catch(() => {
+          this.enableLoading = false;
+          this.hasError = true;
+        });
+      },
       goToPlans() {
         this.showPlans = true;
         this.eventCallback('enter_plans');
@@ -265,11 +297,17 @@
 
         if (!this.psAccountsIsInstalled) {
           this.panelShown = 'ps_accounts_not_installed';
-        } else if (!this.psAccountsIsEnabled) {
+        }
+        else if (!this.psAccountsIsEnabled) {
           this.panelShown = 'ps_accounts_not_enabled';
-        } else if (this.validatedContext && !this.validatedContext.currentShop) {
+        }
+        // else if (!this.psModuleIsUpdated) {
+        //   this.panelShown = 'update_ps_module';
+        // }
+        else if (this.validatedContext && !this.validatedContext.currentShop) {
           this.panelShown = 'multistore_selector';
-        } else {
+        }
+        else {
           this.panelShown = 'account';
         }
 
@@ -282,6 +320,7 @@
         switch (eventType) {
           case 'install_ps_accounts':
           case 'enable_ps_accounts':
+          case 'update_ps_module':
           case 'multi_shop_selected':
           case 'manage_account_link':
           case 'sign_in':

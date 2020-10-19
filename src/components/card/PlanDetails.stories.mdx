@@ -12,13 +12,12 @@ The `PlanDetails` component is here to show the **actual module plan** (free or 
 and to **allow the user to upgrade to an upper plan** (paying).
 
 TODO: write full description
-TODO: add more case
 
 
 ---
-## The shop subscribed to a free plan (the Base one)
+## Display "free plan" (current plan selected)
 
-<Story name='Upgrade Free plan to Next plan' height='120px'>
+<Story name='Free plan (current)' height='400px'>
   {{
     components: {PlanDetails},
     props: {
@@ -27,29 +26,19 @@ TODO: add more case
           currentPlan: {
             id: '1234567',
             level: 42,
-            name: 'My Base plan',
+            name: 'Free plan',
             price: null,
             periodicity: 'monthly',
             recommended: false
           },
-          plans: [
-            {
-              id: '1234567',
-              level: 42,
-              name: 'My Base plan',
-              price: null,
-              periodicity: 'monthly',
-              recommended: false
-            },
-            {
-              id: '1234568',
-              level: 45,
-              name: 'My Upper plan',
-              price: { taxIncluded: 1699, currency: '€' },
-              periodicity: 'monthly',
-              recommended: true
-            }
-          ],
+          plan: {
+            id: '1234567',
+            level: 42,
+            name: 'Free plan',
+            price: null,
+            periodicity: 'monthly',
+            recommended: false
+          },
           address: '12 Rue d\'Amsterdam, 75019 Paris',
           paymentMethod: {
             cardType: 'mastercard',
@@ -61,21 +50,400 @@ TODO: add more case
     },
     methods: {
       nextClicked: action('next', '42'),
-      isHighestPlan: true,
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
     },
     template: `
-      <b-card-group class="card-deck">
-        <template v-for="plan in billing.plans">
-          <PlanDetails
-            :key="plan.id"
-            :plan="plan"
-            :highestPlan="isHighestPlan(plan)"
-            :currentPlan="billing.currentPlan"
-            v-on:next="next"
-            v-on:downgrade="downgrade"
-          />
-        </template>
-      </b-card-group>
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="true"
+        :highestPlan="false"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+
+---
+## Display "paying plan" (current plan selected)
+
+<Story name='Paying plan (current)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="true"
+        :highestPlan="false"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+---
+## Display "paying plan" (upgradable)
+
+<Story name='Paying plan (upgradable)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'Premium plan',
+            price: { taxIncluded: 2999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="true"
+        :highestPlan="true"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+---
+## Display "paying plan" (recommended & upgradable)
+
+<Story name='Paying plan (Recommended & Upgradable)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'Premium plan',
+            price: { taxIncluded: 2999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: true
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="true"
+        :highestPlan="true"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+---
+## Display "paying plan" from multi choice (more of 2)
+
+<Story name='Paying plan (btn grey & Upgradable)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'Premium plan',
+            price: { taxIncluded: 2999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="3"
+        :moduleIsUpdated="true"
+        :highestPlan="true"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+---
+## Display "paying plan" from multi choice (more of 2) recommended
+
+<Story name='Paying plan (btn blue & Recommended & Upgradable)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'Premium plan',
+            price: { taxIncluded: 2999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: true
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="3"
+        :moduleIsUpdated="true"
+        :highestPlan="true"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+
+---
+## Display "paying plan" lower than current plan (downupgradable)
+
+<Story name='Paying plan (Downgrade)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 45,
+            name: 'My Super plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="true"
+        :highestPlan="false"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
+    `,
+  }}
+</Story>
+
+---
+## Display "paying plan" (updatedmodule)
+
+<Story name='Paying plan (Upgraded Module)' height='400px'>
+  {{
+    components: {PlanDetails},
+    props: {
+      billing: {
+        default: object('billing', {
+          currentPlan: {
+            id: '1234568',
+            level: 45,
+            name: 'My Super plan',
+            price: { taxIncluded: 1999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          plan: {
+            id: '1234569',
+            level: 42,
+            name: 'My Base plan',
+            price: { taxIncluded: 999, currency: '€' },
+            periodicity: 'monthly',
+            recommended: false
+          },
+          address: '12 Rue d\'Amsterdam, 75019 Paris',
+          paymentMethod: {
+            cardType: 'mastercard',
+            lastFourNumbers: '4567',
+            expiry: '12/2026',
+          },
+        }),
+      },
+    },
+    methods: {
+      nextClicked: action('next', '42'),
+      downgradeClicked: action('downgrade', '40'),
+      updateEventClicked: action('updated'),
+    },
+    template: `
+      <PlanDetails
+        :plan="billing.plan"
+        :multiPlans="1"
+        :moduleIsUpdated="false"
+        :highestPlan="false"
+        :currentPlan="billing.currentPlan"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
+      />
     `,
   }}
 </Story>
@@ -95,10 +463,13 @@ If you need a customa integration of PS Accounts sub-components, here is the Pla
       <PlanDetails
         :key="plan.id"
         :plan="plan"
-        :highestPlan="isHighestPlan(plan)"
+        :multiPlans="multiPlans"
+        :moduleIsUpdated="moduleIsUpdated"
         :currentPlan="billing.currentPlan"
-        v-on:next="next"
-        v-on:downgrade="downgrade"
+        :highestPlan="isHighestPlan(plan)"
+        @next="next"
+        @downgrade="downgrade"
+        @updated="updateEvent()"
       />
     </template>
   </b-card-group>
